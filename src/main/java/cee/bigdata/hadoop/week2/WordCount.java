@@ -25,7 +25,7 @@ import org.apache.hadoop.util.GenericOptionsParser;
 public class WordCount {
 
 	/**
-	 * Mapper<In-Key, In-Value,    Out-Key, Out-value>
+	 * Mapper<In-Key, In-Value, Out-Key, Out-value>
 	 * 
 	 * @author WangCee
 	 *
@@ -36,9 +36,8 @@ public class WordCount {
 		private Text word = new Text();
 
 		/**
-		 * key: In-Key, it is a offset, we can ignore it
-		 * value: In-Value, it is one line text of the file
-		 * context: write data out
+		 * key: In-Key, it is a offset, we can ignore it value: In-Value, it is
+		 * one line text of the file context: write data out
 		 */
 		protected void map(Object key, Text value, Mapper<Object, Text, Text, IntWritable>.Context context)
 				throws IOException, InterruptedException {
@@ -54,7 +53,8 @@ public class WordCount {
 	}
 
 	/**
-	 * Reducer<In-Key, In-Value,    Out-Key, Out-value>
+	 * Reducer<In-Key, In-Value, Out-Key, Out-value>
+	 * 
 	 * @author WangCee
 	 *
 	 */
@@ -62,9 +62,7 @@ public class WordCount {
 		private IntWritable result = new IntWritable();
 
 		/**
-		 * key: 
-		 * values: 
-		 * context: 
+		 * key: values: context:
 		 */
 		protected void reduce(Text key, Iterable<IntWritable> values,
 				Reducer<Text, IntWritable, Text, IntWritable>.Context context)
@@ -90,18 +88,18 @@ public class WordCount {
 			System.err.println("Usage: wordcount <in> <out>");
 			System.exit(1);
 		}
-		
+
 		System.err.println(otherArgs[0]);
 		System.err.println(otherArgs[1]);
-		
+
 		Job job = Job.getInstance(conf, "Word Count");
 		job.setJarByClass(WordCount.class);
 		job.setMapperClass(TokenizerMapper.class);
 		job.setCombinerClass(IntSumReducer.class);
 		job.setReducerClass(IntSumReducer.class);
-		job.setOutputValueClass(Text.class);
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-		
+
 		FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
 		FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
