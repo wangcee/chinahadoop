@@ -4,6 +4,7 @@
 package cee.bigdata.hadoop.week2;
 
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -42,9 +43,9 @@ public class WordCount {
 		protected void map(Object key, Text value, Mapper<Object, Text, Text, IntWritable>.Context context)
 				throws IOException, InterruptedException {
 
-			String[] wordTxtArray = StringUtils.split(value.toString(), " ");
-			for (String wordTxt : wordTxtArray) {
-				word.set(wordTxt);
+			StringTokenizer itr = new StringTokenizer(value.toString());
+			while (itr.hasMoreElements()) {
+				word.set(itr.nextToken());
 				context.write(word, one);
 			}
 
@@ -89,6 +90,9 @@ public class WordCount {
 			System.err.println("Usage: wordcount <in> <out>");
 			System.exit(1);
 		}
+		
+		System.err.println(otherArgs[0]);
+		System.err.println(otherArgs[1]);
 		
 		Job job = Job.getInstance(conf, "Word Count");
 		job.setJarByClass(WordCount.class);
