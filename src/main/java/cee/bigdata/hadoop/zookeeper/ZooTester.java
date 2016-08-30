@@ -53,7 +53,7 @@ public class ZooTester implements Watcher {
 		ZooTester zk = new ZooTester("10.144.241.218:2181");
 		zk.getState();
 		zk.exists();
-		zk.createZnode("javatest", "aaa-cee-txt".getBytes());
+		zk.createZnode("/javatest", "aaa-cee-txt".getBytes());
 	}
 
 
