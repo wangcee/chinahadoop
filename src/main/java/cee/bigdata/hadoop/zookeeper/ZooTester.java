@@ -5,6 +5,7 @@ package cee.bigdata.hadoop.zookeeper;
 
 import java.io.IOException;
 
+import org.apache.curator.CuratorZookeeperClient;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
@@ -39,21 +40,37 @@ public class ZooTester implements Watcher {
 		zk.create(path, data, Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
 	}
 	
-	public void exists() throws KeeperException, InterruptedException, JsonProcessingException {
-		System.out.println(mapper.writeValueAsString(zk.exists("/javatest", false)));
+	public void exists(String path) throws KeeperException, InterruptedException, JsonProcessingException {
+		zk.exists(path, this);
 	}
 	
 	public void getState() throws KeeperException, InterruptedException, JsonProcessingException {
 		System.out.println(zk.getState());
 	}
 	
+	
+	
 	public static void main(String[] args) throws Exception {
 		System.out.println("================");
 		
-		ZooTester zk = new ZooTester("10.144.241.218:2181");
-		zk.getState();
-		zk.exists();
-		zk.createZnode("/javatest", "aaa-cee-txt".getBytes());
+		try {
+			ZooTester zk = new ZooTester("115.28.109.129");
+//			zk.getState();
+//			zk.exists();
+			
+//			int random = RandomUtils.nextInt(100);
+//			System.out.println(random);
+			
+//			zk.createZnode("/javatest/lock1", "Cee-Test".getBytes());
+			
+			zk.exists("/javatest/lock1");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		Thread.sleep(Long.MAX_VALUE);
+
 	}
 
 
@@ -61,7 +78,17 @@ public class ZooTester implements Watcher {
 	public void process(WatchedEvent arg0) {
 		try {
 			System.out.println("WatchedEvent: " + mapper.writeValueAsString(arg0));
-		} catch (JsonProcessingException e) {
+			
+			if (arg0.getType() == Event.EventType.NodeDeleted) {
+				System.out.println("Scott close the program !!!");
+			}
+			if (arg0.getType() == Event.EventType.NodeCreated) {
+				System.out.println("Scott start the program ---");
+			}
+			
+			exists("/javatest/lock1");
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
