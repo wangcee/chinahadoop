@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
+ * 
  * cee.bigdata.hadoop.zookeeper.ZooTester.java
  *
  * @author WangCeeAsus
@@ -49,17 +50,17 @@ public class ZooTester implements Watcher {
 	public static void main(String[] args) throws Exception {
 		System.out.println("================");
 		
-		ZooTester zk = new ZooTester("115.28.109.129:2181");
+		ZooTester zk = new ZooTester("10.144.241.218:2181");
 		zk.getState();
 		zk.exists();
-//		zk.createZnode("/javatest/cee", "aaa".getBytes());
+		zk.createZnode("/javatest/cee", "aaa".getBytes());
 	}
 
 
 	@Override
 	public void process(WatchedEvent arg0) {
 		try {
-			System.out.println(mapper.writeValueAsString(arg0));
+			System.out.println("WatchedEvent: " + mapper.writeValueAsString(arg0));
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
